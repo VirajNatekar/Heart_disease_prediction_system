@@ -1,0 +1,35 @@
+{
+  "model_pipeline": "Model B: UCI Cleveland Clinical Benchmark",
+  "dataset": "UCI Heart Disease \u2014 processed Cleveland subset",
+  "target_mapping": "num == 0 -> 0; num in 1..4 -> 1",
+  "selected_model": "Extra Trees",
+  "selection_metric": "Mean 5-fold cross-validation ROC-AUC on training partition",
+  "random_state": 42,
+  "split": {
+    "train_records": 242,
+    "test_records": 61,
+    "test_ratio": 0.2
+  },
+  "holdout_test_metrics": {
+    "accuracy": 0.8688524590163934,
+    "balanced_accuracy": 0.8733766233766234,
+    "precision": 0.8125,
+    "recall_sensitivity": 0.9285714285714286,
+    "specificity": 0.8181818181818182,
+    "f1_score": 0.8666666666666667,
+    "roc_auc": 0.9448051948051948,
+    "brier_score": 0.10436018327160218,
+    "confusion_matrix": {
+      "tn": 27,
+      "fp": 6,
+      "fn": 2,
+      "tp": 26
+    }
+  },
+  "limitations": [
+    "Historical sample (N=303) collected in 1989 at Cleveland Clinic.",
+    "Cannot establish population-level diagnostic accuracy for modern outpatients.",
+    "Model scores are classifier likelihoods, not calibrated personal risk percentages."
+  ],
+  "trained_at_utc": "2026-10-22T14:44:34.121863+00:00"
+}

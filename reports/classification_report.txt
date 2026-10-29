@@ -1,0 +1,17 @@
+=== CDC BRFSS 2022 TEMPORAL HOLDOUT CLASSIFICATION REPORT ===
+
+Model: Histogram Gradient Boosting
+Decision Threshold: 0.5200
+
+                           precision    recall  f1-score   support
+
+No Reported Heart Disease     0.9736    0.7245    0.8308    224406
+   Reported Heart Disease     0.2178    0.7964    0.3421     21616
+
+                 accuracy                         0.7308    246022
+                macro avg     0.5957    0.7605    0.5864    246022
+             weighted avg     0.9072    0.7308    0.7879    246022
+
+ROC-AUC: 0.8364
+PR-AUC: 0.3382
+Brier Score: 0.1755

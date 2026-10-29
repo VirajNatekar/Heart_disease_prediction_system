@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+artifacts/*.joblib
+data/raw/*
+data/heart_disease.csv
+reports/*.csv
+reports/*.json
+reports/*.png
+!data/raw/.gitkeep
+!artifacts/.gitkeep
+!reports/.gitkeep

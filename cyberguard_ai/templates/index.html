@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CyberGuard AI | Scam message checker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">CYBERGUARD AI · MINI PROJECT</p>
+      <h1>Pause. Check. Protect.</h1>
+      <p>Review a suspicious message for explainable fraud warning signs.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Analyze a message</h2>
+      <p class="muted">Paste text you want to check. This demo does not open links or contact external services.</p>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <p class="notice {{ category }}">{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <form method="post">
+        <label for="message">Message text</label>
+        <textarea id="message" name="message" maxlength="5000" required
+          placeholder="Example: Your account will be blocked today. Verify your password now: http://example.test">{{ submitted_message }}</textarea>
+        <button type="submit">Analyze message</button>
+      </form>
+    </section>
+
+    {% if result %}
+      <section class="panel result" aria-live="polite">
+        <div class="result-heading">
+          <div>
+            <p class="eyebrow">ASSESSMENT</p>
+            <h2 class="level {{ result.level|lower }}">{{ result.level }} risk</h2>
+          </div>
+          <div class="score"><strong>{{ result.score }}</strong><span>heuristic points</span></div>
+        </div>
+        <p>{{ result.recommendation }}</p>
+        <h3>Evidence found</h3>
+        {% if result.evidence %}
+          <ul class="evidence">
+            {% for item in result.evidence %}
+              <li><strong>{{ item.label }}</strong><span>{{ item.explanation }}</span></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No indicators from this demo's limited rule set were found.</p>
+        {% endif %}
+        <p class="disclaimer">This is a heuristic warning, not proof of fraud or proof that a message is safe.</p>
+      </section>
+    {% endif %}
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <h2>Recent local reports</h2>
+          <p class="muted">Repeated hosts are used as one correlation signal.</p>
+        </div>
+        {% if reports %}
+          <form method="post" action="{{ url_for('clear_history') }}">
+            <button class="secondary" type="submit">Clear history</button>
+          </form>
+        {% endif %}
+      </div>
+      {% if reports %}
+        <ul class="reports">
+          {% for report in reports %}
+            <li>
+              <div><span class="badge {{ report.level|lower }}">{{ report.level }}</span><span class="muted"> · {{ report.created_at }}</span></div>
+              <p>{{ report.message }}</p>
+              {% set report_hosts = report.hosts|from_json %}
+              {% if report_hosts %}<small>Hosts: {{ report_hosts|join(", ") }}</small>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No reports yet. Submit a message above to get started.</p>
+      {% endif %}
+    </section>
+    <footer>Local educational prototype · Do not paste passwords, one-time codes, or other real sensitive information.</footer>
+  </main>
+</body>
+</html>

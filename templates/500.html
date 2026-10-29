@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Server Error | Heartwise{% endblock %}
+{% block content %}
+<section class="shell" style="padding: 120px 0; text-align: center;">
+  <div style="max-width: 600px; margin: 0 auto;">
+    <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; margin-bottom: 28px; border-radius: 20px; background: linear-gradient(135deg, #fff5f6 0%, #ffebee 100%); box-shadow: 0 12px 32px rgba(184, 64, 85, 0.08);">
+      <span style="font-size: 42px; font-weight: 800; color: var(--danger);">500</span>
+    </div>
+
+    <h1 style="margin: 0 0 16px; font-size: 32px; font-weight: 740; letter-spacing: -1.2px; color: #1a2b45;">Something went wrong</h1>
+
+    <p style="margin: 0 0 32px; font-size: 14px; line-height: 1.7; color: #65758e;">
+      The application encountered an unexpected error. This has been logged and we'll look into it. Please try again or return to the home page.
+    </p>
+
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="{{ url_for('index') }}" class="button button-primary" style="text-decoration: none;">
+        Return to home page
+      </a>
+      <a href="javascript:history.back()" class="button button-secondary" style="text-decoration: none;">
+        Go back
+      </a>
+    </div>
+
+    <div style="margin-top: 48px; padding: 18px; border: 1px solid #f3d5dc; border-radius: 12px; background: var(--danger-bg); text-align: left;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <span style="display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--danger); color: white; font-size: 14px; font-weight: 800;">!</span>
+        <strong style="font-size: 11px; font-weight: 750; color: #773748;">For local development</strong>
+      </div>
+      <p style="margin: 0; font-size: 10px; line-height: 1.7; color: #89616f;">
+        If you're running this app locally and need to see detailed error information, enable Flask debug mode by setting <code style="padding: 2px 6px; background: white; border: 1px solid #f3d5dc; border-radius: 4px; font-family: monospace; font-size: 9px;">FLASK_DEBUG=1</code> in your environment. Never enable debug mode in production.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

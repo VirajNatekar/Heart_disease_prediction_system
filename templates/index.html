@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% block title %}Heartwise | Heart Disease Prediction System (Dual-Pipeline){% endblock %}
+
+{% block content %}
+<section class="hero shell">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="eyebrow-line"></span> MACHINE LEARNING · HEALTH DATA SCIENCE</div>
+    <h1>Heart Disease<br><span>Prediction System</span></h1>
+    <p class="hero-description">
+      An academic dual-pipeline machine learning platform comparing large-scale population health survey patterns (CDC
+      BRFSS, 300k+ records) with clinical diagnostic benchmarks (UCI Cleveland).
+    </p>
+    <div class="hero-meta">
+      <span class="meta-icon" aria-hidden="true">
+        <svg viewBox="0 0 20 20">
+          <path d="M10 16.7s-6.2-3.8-6.2-8.2A3.5 3.5 0 0 1 10 6.2a3.5 3.5 0 0 1 6.2 2.3c0 4.4-6.2 8.2-6.2 8.2Z" />
+        </svg>
+      </span>
+      <span><strong>Dual-Pipeline Architecture</strong><small>Survey Model & Clinical Benchmark</small></span>
+      <span class="meta-separator"></span>
+      <span class="meta-icon chart-icon" aria-hidden="true">↗</span>
+      <span><strong>Strict Data Hygiene</strong><small>Zero Leakage · Multi-Year Harmonization</small></span>
+    </div>
+  </div>
+
+  <aside class="hero-note" aria-label="Medical safety notice">
+    <div class="note-topline"><span class="note-shield" aria-hidden="true">i</span> MEDICAL DISCLAIMER</div>
+    <h2>Not a diagnosis.</h2>
+    <p>This academic tool cannot confirm or exclude heart disease. The clinical dataset is small and historical; the
+      survey dataset models self-reported associations. Medical disclaimer: Never use these results for clinical
+      decisions.</p>
+    <div class="note-bottom"><span class="note-check" aria-hidden="true">✓</span> Educational academic demonstration
+      only</div>
+  </aside>
+</section>
+
+<!-- Dual-Pipeline Mode Selector Tabs -->
+<section class="mode-selector-wrap shell">
+  <div class="mode-tabs" role="tablist" aria-label="Prediction Model Selection">
+    <a href="{{ url_for('index', mode='brfss') }}#assessment"
+      class="mode-tab {% if active_mode == 'brfss' %}is-active{% endif %}" role="tab"
+      aria-selected="{{ 'true' if active_mode == 'brfss' else 'false' }}">
+      <div class="mode-tab-badge">PRIMARY LARGE-SCALE</div>
+      <div class="mode-tab-title">Survey-Based Heart Disease Status Model</div>
+      <div class="mode-tab-desc">CDC BRFSS · 300,000+ respondents · 15 behavioral & lifestyle attributes</div>
+    </a>
+    <a href="{{ url_for('index', mode='clinical') }}#assessment"
+      class="mode-tab {% if active_mode == 'clinical' %}is-active{% endif %}" role="tab"
+      aria-selected="{{ 'true' if active_mode == 'clinical' else 'false' }}">
+      <div class="mode-tab-badge">CLINICAL BENCHMARK</div>
+      <div class="mode-tab-title">Clinical Dataset Benchmark</div>
+      <div class="mode-tab-desc">UCI Cleveland · 13 physiological & diagnostic measurements (ECG, thal, ST)</div>
+    </a>
+  </div>
+</section>
+
+{% if not model_ready %}
+<section class="setup-banner shell" role="status">
+  <div class="setup-symbol" aria-hidden="true">⌁</div>
+  <div>
+    <strong>Model Training Required</strong>
+    <p>Run the training scripts to initialize both machine learning pipelines before inference.</p>
+  </div>
+  <code>python scripts/train_model.py</code>
+</section>
+{% endif %}
+
+{% if errors %}
+<section class="form-errors shell" role="alert" aria-labelledby="error-title">
+  <div class="error-heading" id="error-title"><span aria-hidden="true">!</span> Please correct the following inputs
+  </div>
+  <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+</section>
+{% endif %}
+
+{% if result %}
+<section class="result-wrap shell" aria-live="polite">
+  <div class="result-card {% if result.positive %}result-positive{% else %}result-negative{% endif %}">
+    <div class="result-icon" aria-hidden="true">{% if result.positive %}↗{% else %}✓{% endif %}</div>
+    <div class="result-copy">
+      <div class="result-kicker">{{ result.model_type | upper }} · EDUCATIONAL CLASSIFIER</div>
+      <h2>{{ result.class_label }}</h2>
+      <p>{{ result.explanation }}</p>
+
+      {% if result.raw_score is not none %}
+      <div class="score-row">
+        <span>Model likelihood score for positive class</span>
+        <strong>{{ (result.raw_score * 100)|round(1) }}%</strong>
+      </div>
+      <div class="score-track" aria-hidden="true">
+        <span class="score-fill" style="width: {{ [0, [100, (result.raw_score * 100)|round(1)]|min]|max }}%;"></span>
+      </div>
+      <div class="score-threshold-indicator">
+        <small>Tuned decision threshold: <strong>{{ (result.threshold * 100)|round(1) }}%</strong></small>
+      </div>
+      <p class="score-caveat">
+        <strong>Important Limitation:</strong> This numerical value is a mathematical model decision score based on
+        survey pattern similarity. It is <em>not</em> an individual's validated clinical probability of developing heart
+        disease.
+      </p>
+      {% endif %}
+
+      <div class="result-footnote">
+        <span aria-hidden="true">ⓘ</span> Model: {{ result.model_name }} · Inputs are processed ephemerally and never
+        persisted.
+      </div>
+    </div>
+    <a class="result-dismiss" href="{{ url_for('index', mode=active_mode) }}#assessment">New Assessment <span
+        aria-hidden="true">↗</span></a>
+  </div>
+</section>
+{% endif %}
+
+<section class="workspace shell" id="assessment">
+  <div class="section-heading">
+    <div>
+      <div class="eyebrow"><span class="eyebrow-line"></span> INPUT WORKSPACE</div>
+      <h2>
+        {% if active_mode == 'brfss' %}
+        Survey-Based Health Status Form
+        {% else %}
+        Clinical Diagnostic Feature Form
+        {% endif %}
+      </h2>
+      <p>
+        {% if active_mode == 'brfss' %}
+        Enter self-reported demographic, lifestyle, and health characteristics. Modeled on official CDC BRFSS
+        questionnaire standards.
+        {% else %}
+        Enter measured clinical parameters from patient records and diagnostic tests (ECG, cardiac imaging).
+        {% endif %}
+      </p>
+    </div>
+    <div class="form-index">
+      <span>01</span><span class="index-line"></span><span>0{{ sections|length }}</span>
+      <small>SECTIONS</small>
+    </div>
+  </div>
+
+  <div class="workspace-grid">
+    <form class="assessment-form"
+      action="{% if active_mode == 'brfss' %}{{ url_for('predict_brfss_route') }}{% else %}{{ url_for('predict_clinical_route') }}{% endif %}"
+      method="post" novalidate>
+      <input type="hidden" name="mode" value="{{ active_mode }}">
+      {% for section in sections %}
+      <section class="form-section">
+        <div class="form-section-head">
+          <div class="section-number">0{{ loop.index }}</div>
+          <div>
+            <h3>{{ section.title }}</h3>
+            <p>{{ section.description }}</p>
+          </div>
+        </div>
+        <div class="field-grid">
+          {% for field in section.fields %}
+          {% set meta = active_metadata[field] %}
+          <div
+            class="field-group {% if field in ['GeneralHealth', 'cp', 'restecg', 'SmokerStatus', 'AgeCategory'] %}field-wide{% endif %}">
+            <label for="{{ field }}">{{ meta.label }} <span class="required-mark" aria-hidden="true">*</span></label>
+            {% if meta.type == 'select' %}
+            <div class="select-wrap">
+              <select id="{{ field }}" name="{{ field }}" required aria-describedby="{{ field }}-help">
+                <option value="" disabled {% if not submitted.get(field) %}selected{% endif %}>Choose an option</option>
+                {% for value, label in meta.options.items() %}
+                <option value="{{ value }}" {% if submitted.get(field, '' )==value or submitted.get(field, ''
+                  )==value|string %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              <span class="select-chevron" aria-hidden="true">⌄</span>
+            </div>
+            {% else %}
+            <div class="input-wrap">
+              <input id="{{ field }}" name="{{ field }}" type="number" min="{{ meta.min }}" max="{{ meta.max }}"
+                step="{{ meta.step }}" value="{{ submitted.get(field, meta.get('default', '')) }}" required
+                inputmode="decimal" aria-describedby="{{ field }}-help" placeholder="{{ meta.min }}–{{ meta.max }}">
+              {% if meta.unit %}<span class="input-unit">{{ meta.unit }}</span>{% endif %}
+            </div>
+            {% endif %}
+            <small class="field-help" id="{{ field }}-help">{{ meta.help }}</small>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
+
+      <div class="form-actions">
+        <button type="submit" class="submit-button">
+          {% if active_mode == 'brfss' %}
+          Compute Survey Model Prediction <span aria-hidden="true">→</span>
+          {% else %}
+          Compute Clinical Benchmark Prediction <span aria-hidden="true">→</span>
+          {% endif %}
+        </button>
+        <span class="privacy-note"><span aria-hidden="true">🔒</span> Inputs are evaluated in-memory and discarded
+          immediately.</span>
+      </div>
+    </form>
+
+    <aside class="model-sidebar" id="about-model">
+      <div class="sidebar-card">
+        <h3>Pipeline Information</h3>
+        <div class="pipeline-spec">
+          <div class="spec-row">
+            <span>Model Mode</span>
+            <strong>{% if active_mode == 'brfss' %}Model A (CDC Survey){% else %}Model B (UCI Clinical){% endif
+              %}</strong>
+          </div>
+          <div class="spec-row">
+            <span>Primary Algorithm</span>
+            <strong>{% if active_mode == 'brfss' %}{{ brfss_model_name }}{% else %}{{ uci_model_name }}{% endif
+              %}</strong>
+          </div>
+          <div class="spec-row">
+            <span>Dataset Cohort</span>
+            <strong>{% if active_mode == 'brfss' %}CDC BRFSS 2020 (319,795 rows){% else %}UCI Cleveland (303 records){%
+              endif %}</strong>
+          </div>
+          <div class="spec-row">
+            <span>Evaluation Protocol</span>
+            <strong>{% if active_mode == 'brfss' %}2022 Temporal Holdout (246k rows){% else %}Stratified 5-Fold
+              Cross-Validation{% endif %}</strong>
+          </div>
+        </div>
+
+        <div class="pipeline-divider"></div>
+        <h4>Architectural Distinction</h4>
+        <p class="pipeline-note">
+          {% if active_mode == 'brfss' %}
+          <strong>Model A (CDC Survey)</strong> models retrospective statistical patterns in self-reported health
+          behavior. It does <em>not</em> use invasive clinical measurements and does not claim clinical diagnosis.
+          {% else %}
+          <strong>Model B (UCI Clinical)</strong> preserves the historical Cleveland Clinic benchmark utilizing 13
+          physiological and imaging attributes (e.g., fluoroscopy vessels, thallium scans).
+          {% endif %}
+        </p>
+        <div class="pipeline-switch-cta">
+          <span>Switch pipeline:</span>
+          {% if active_mode == 'brfss' %}
+          <a href="{{ url_for('index', mode='clinical') }}#assessment">Explore Model B (Clinical Benchmark) →</a>
+          {% else %}
+          <a href="{{ url_for('index', mode='brfss') }}#assessment">Explore Model A (CDC Survey Model) →</a>
+          {% endif %}
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found | Heartwise{% endblock %}
+{% block content %}
+<section class="shell" style="padding: 120px 0; text-align: center;">
+  <div style="max-width: 580px; margin: 0 auto;">
+    <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; margin-bottom: 28px; border-radius: 20px; background: linear-gradient(135deg, #eef5ff 0%, #dceaff 100%); box-shadow: 0 12px 32px rgba(21, 94, 239, 0.08);">
+      <span style="font-size: 42px; font-weight: 800; color: var(--blue);">404</span>
+    </div>
+
+    <h1 style="margin: 0 0 16px; font-size: 32px; font-weight: 740; letter-spacing: -1.2px; color: #1a2b45;">Page not found</h1>
+
+    <p style="margin: 0 0 32px; font-size: 14px; line-height: 1.7; color: #65758e;">
+      The page you're looking for doesn't exist or may have been moved. Return to the home page to access the prediction form.
+    </p>
+
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="{{ url_for('index') }}" class="button button-primary" style="text-decoration: none;">
+        Return to home page
+      </a>
+      <a href="{{ url_for('index') }}#assessment" class="button button-secondary" style="text-decoration: none;">
+        Go to assessment form
+      </a>
+    </div>
+
+    <div style="margin-top: 48px; padding: 18px; border: 1px solid #e8eef6; border-radius: 12px; background: #f9fbff; text-align: left;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <span style="display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: #e6efff; color: var(--blue); font-size: 13px; font-weight: 800;">i</span>
+        <strong style="font-size: 11px; font-weight: 750; color: #2d4158;">Need help?</strong>
+      </div>
+      <p style="margin: 0; font-size: 10px; line-height: 1.7; color: #7383a0;">
+        If you believe this page should exist or were linked here from within the application, please check the URL or contact support.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
